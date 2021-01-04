@@ -65,49 +65,52 @@ class PianoKey(QtWidgets.QGraphicsRectItem):
 KEYWIDTH, KEYHEIGHT = 18, 72
 
 class PianoKeyBoard(QtWidgets.QGraphicsView):
-	def __init__(self, num_octaves=1,  parent=None):
-		super(PianoKeyBoard, self).__init__(parent)
-		self.initialize()
-		self.m_numOctaves = num_octaves
-		scene = QtWidgets.QGraphicsScene(QtCore.QRectF(0, 0, KEYWIDTH * self.m_numOctaves * 7, KEYHEIGHT), self)
-		self.setScene(scene)
-		numkeys = self.m_numOctaves * 12
+    def __init__(self, num_octaves=1,  parent=None, end_octave=1, frst_octave=0):
+        super(PianoKeyBoard, self).__init__(parent)
+        self.initialize()
+        self.m_numOctaves = num_octaves
+        scene = QtWidgets.QGraphicsScene(QtCore.QRectF(0, 0, KEYWIDTH * self.m_numOctaves * 7, KEYHEIGHT), self)
+        self.setScene(scene)
+        numkeys = self.m_numOctaves * 12 + end_octave + frst_octave
 
-		for i in range(numkeys):
-			octave = i//12*7
-			j = i % 12
-			if j >= 5: j += 1
-			if j % 2 == 0:
-				x = (octave + j/2)*KEYWIDTH
-				key = PianoKey(rect=QtCore.QRectF(x, 0, KEYWIDTH, KEYHEIGHT), black=False, num=i)
-			else:
-				x = (octave + j//2) * KEYWIDTH  + KEYWIDTH * 6//10 + 1
-				key = PianoKey(rect=QtCore.QRectF(x, 0, KEYWIDTH * 8//10 - 1, KEYHEIGHT * 6//10 ), black=True)
-				key.setZValue(1)
-			key.setPressedBrush(QtWidgets.QApplication.palette().highlight())
-			key.m_number = i
-			self.scene().addItem(key)
+        if frst_octave > 0:
+            shift_octave = frst_octave // 12
 
-	def initialize(self):
-		self.setAttribute(QtCore.Qt.WA_InputMethodEnabled, False)
-		self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-		self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-		self.setCacheMode(QtWidgets.QGraphicsView.CacheBackground)
-		self.setViewportUpdateMode(QtWidgets.QGraphicsView.MinimalViewportUpdate)
-		self.setRenderHints(QtGui.QPainter.Antialiasing|
-			QtGui.QPainter.TextAntialiasing | 
-			QtGui.QPainter.SmoothPixmapTransform)
-		self.setOptimizationFlag(QtWidgets.QGraphicsView.DontClipPainter, True)
-		self.setOptimizationFlag(QtWidgets.QGraphicsView.DontSavePainterState, True)
-		self.setOptimizationFlag(QtWidgets.QGraphicsView.DontAdjustForAntialiasing, True)
-		self.setBackgroundBrush(QtWidgets.QApplication.palette().base())
+        for i in range(numkeys):
+            octave = i//12*7
+            j = i % 12
+            if j >= 5: j += 1
+            if j % 2 == 0:
+                x = (octave + j/2)*KEYWIDTH
+                key = PianoKey(rect=QtCore.QRectF(x, 0, KEYWIDTH, KEYHEIGHT), black=False, num=i)
+            else:
+                x = (octave + j//2) * KEYWIDTH  + KEYWIDTH * 6//10 + 1
+                key = PianoKey(rect=QtCore.QRectF(x, 0, KEYWIDTH * 8//10 - 1, KEYHEIGHT * 6//10 ), black=True)
+                key.setZValue(1)
+            key.setPressedBrush(QtWidgets.QApplication.palette().highlight())
+            key.m_number = i
+            self.scene().addItem(key)
 
-	def resizeEvent(self, event):
-		super(PianoKeyBoard, self).resizeEvent(event)
-		self.fitInView(self.scene().sceneRect(), QtCore.Qt.KeepAspectRatio)
+    def initialize(self):
+        self.setAttribute(QtCore.Qt.WA_InputMethodEnabled, False)
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setCacheMode(QtWidgets.QGraphicsView.CacheBackground)
+        self.setViewportUpdateMode(QtWidgets.QGraphicsView.MinimalViewportUpdate)
+        self.setRenderHints(QtGui.QPainter.Antialiasing|
+            QtGui.QPainter.TextAntialiasing | 
+            QtGui.QPainter.SmoothPixmapTransform)
+        self.setOptimizationFlag(QtWidgets.QGraphicsView.DontClipPainter, True)
+        self.setOptimizationFlag(QtWidgets.QGraphicsView.DontSavePainterState, True)
+        self.setOptimizationFlag(QtWidgets.QGraphicsView.DontAdjustForAntialiasing, True)
+        self.setBackgroundBrush(QtWidgets.QApplication.palette().base())
 
-	def sizeHint(self):
-		return self.mapFromScene(self.sceneRect()).boundingRect().size()
+    def resizeEvent(self, event):
+        super(PianoKeyBoard, self).resizeEvent(event)
+        self.fitInView(self.scene().sceneRect(), QtCore.Qt.KeepAspectRatio)
+
+    def sizeHint(self):
+        return self.mapFromScene(self.sceneRect()).boundingRect().size()
 
 def display_time():
     lol1.setText(str(int(end_time - start_time)))
