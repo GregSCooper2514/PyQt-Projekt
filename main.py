@@ -59,32 +59,44 @@ class PianoKey(QtWidgets.QGraphicsRectItem):
         self.m_pressed = False
         self.update()
         end_time = time.time()
-        display_num(str(self.m_number))
+        addnote(self.m_number, start_time, end_time)
         super(PianoKey, self).mouseReleaseEvent(event)
 
 KEYWIDTH, KEYHEIGHT = 18, 72
 
 class PianoKeyBoard(QtWidgets.QGraphicsView):
-    def __init__(self, num_octaves=1,  parent=None, end_octave=1, frst_octave=0):
+    def __init__(self, num_octaves=2,  parent=None, end_octave=1, frst_octave=0):
         super(PianoKeyBoard, self).__init__(parent)
         self.initialize()
         self.m_numOctaves = num_octaves
         scene = QtWidgets.QGraphicsScene(QtCore.QRectF(0, 0, KEYWIDTH * self.m_numOctaves * 7, KEYHEIGHT), self)
         self.setScene(scene)
         numkeys = self.m_numOctaves * 12 + end_octave + frst_octave
-
+        shift_octave = 0
         if frst_octave > 0:
-            shift_octave = frst_octave // 12
+            if frst_octave % 12 < 9:
+                shift_octave = (frst_octave % 12) // 2 + 1
+            else:
+                shift_octave = (frst_octave % 12 + 1) // 2 + 1
 
         for i in range(numkeys):
-            octave = i//12*7
-            j = i % 12
-            if j >= 5: j += 1
+            octave = (i - shift_octave)//12*7
+            if shift_octave > 0 and i > 0:
+                if i > frst_octave % 12:
+                    j = (i - frst_octave % 12) % 12
+                    if j >= 5: j += 1
+                else:
+                    pass                
+
+                   
+            else:
+                j = i % 12
+                if j >= 5: j += 1
             if j % 2 == 0:
-                x = (octave + j/2)*KEYWIDTH
+                x = (octave + j/2 + shift_octave)*KEYWIDTH
                 key = PianoKey(rect=QtCore.QRectF(x, 0, KEYWIDTH, KEYHEIGHT), black=False, num=i)
             else:
-                x = (octave + j//2) * KEYWIDTH  + KEYWIDTH * 6//10 + 1
+                x = (octave + j//2 + shift_octave) * KEYWIDTH  + KEYWIDTH * 6//10 + 1
                 key = PianoKey(rect=QtCore.QRectF(x, 0, KEYWIDTH * 8//10 - 1, KEYHEIGHT * 6//10 ), black=True)
                 key.setZValue(1)
             key.setPressedBrush(QtWidgets.QApplication.palette().highlight())
@@ -112,8 +124,9 @@ class PianoKeyBoard(QtWidgets.QGraphicsView):
     def sizeHint(self):
         return self.mapFromScene(self.sceneRect()).boundingRect().size()
 
-def display_time():
-    lol1.setText(str(int(end_time - start_time)))
+def addnote(note, start_time, end_time):
+    x = str(end_time - start_time) + " " + str(note)
+    lol1.setText(x)
 
 def display_num(text):
     lol1.setText(text)
@@ -129,7 +142,6 @@ if __name__ == '__main__':
     lay.addWidget(lol)
     lay.addWidget(PianoKeyBoard())
     lay.addWidget(lol1)
-    lol.clicked.connect(display_time)
     w.resize(640, 480)
     w.setWindowTitle("Пианино")
     w.show()
