@@ -1,14 +1,21 @@
-from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
 import os
 import sys
 import time
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
-from PyQt5.QtWidgets import QLabel, QLineEdit
+from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
+from PyQt5.QtWidgets import QPushButton, QLineEdit
 os.chdir("C:\\Users\\Greg\\Downloads")
 start_time = None
 end_time = None
 KEYWIDTH, KEYHEIGHT = 18, 72
 
+class Example(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        self.setGeometry(0, 0, 1280, 1024)
+        self.setWindowTitle('Пианино')
 
 class PianoKey(QtWidgets.QGraphicsRectItem):
     def __init__(self, black=False, rect = QtCore.QRectF(), parent=None, num=0):
@@ -25,8 +32,7 @@ class PianoKey(QtWidgets.QGraphicsRectItem):
     def paint(self, painter, option, widget):
         rendered = QtSvg.QSvgRenderer("key.svg")
         black_pen = QtGui.QPen(QtCore.Qt.black, 1)
-        gray_pen = QtGui.QPen(QtGui.QBrush(QtCore.Qt.gray), 1,
-            QtCore.Qt.SolidLine, QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin)
+        gray_pen = QtGui.QPen(QtGui.QBrush(QtCore.Qt.gray), 1, QtCore.Qt.SolidLine, QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin)
         if self.m_pressed:
             if self.m_selectedBrush.style() != QtCore.Qt.NoBrush:
                 painter.setBrush(self.m_selectedBrush)
@@ -87,7 +93,7 @@ class PianoKeyBoard(QtWidgets.QGraphicsView):
                     j = (i - first_octave % 12) % 12
                     if j >= 5: j += 1
                 else:
-                    if (first_octave - i) < 4: #?????????
+                    if (first_octave - i) < 4:
                         j = i
                     else:
                         j = i + 1
@@ -99,7 +105,7 @@ class PianoKeyBoard(QtWidgets.QGraphicsView):
                 x = (octave + j / 2)*KEYWIDTH
                 key = PianoKey(rect=QtCore.QRectF(x, 0, KEYWIDTH, KEYHEIGHT), black=False, num=i)
             else:
-                x = (octave + j // 2) * KEYWIDTH  + KEYWIDTH * 6 // 10 + 1
+                x = (octave + j // 2) * KEYWIDTH + KEYWIDTH * 6 // 10 + 1
                 key = PianoKey(rect=QtCore.QRectF(x, 0, KEYWIDTH * 8 // 10 - 1, KEYHEIGHT * 6//10), black=True)
                 key.setZValue(1)
             key.setPressedBrush(QtWidgets.QApplication.palette().highlight())
@@ -108,11 +114,11 @@ class PianoKeyBoard(QtWidgets.QGraphicsView):
 
     def initialize(self):
         self.setAttribute(QtCore.Qt.WA_InputMethodEnabled, False)
-        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        #self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        #self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setCacheMode(QtWidgets.QGraphicsView.CacheBackground)
         self.setViewportUpdateMode(QtWidgets.QGraphicsView.MinimalViewportUpdate)
-        self.setRenderHints(QtGui.QPainter.Antialiasing|
+        self.setRenderHints(QtGui.QPainter.Antialiasing |
             QtGui.QPainter.TextAntialiasing |
             QtGui.QPainter.SmoothPixmapTransform)
         self.setOptimizationFlag(QtWidgets.QGraphicsView.DontClipPainter, True)
@@ -140,15 +146,19 @@ def display_num(text):
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle('fusion')
-    lol = QPushButton("Вывести длительность")
-    lol1 = QLineEdit("")
-    w = QtWidgets.QWidget()
-    lay = QtWidgets.QVBoxLayout(w)
-    lay.addWidget(QtWidgets.QLabel("Piano Keyboard", alignment=QtCore.Qt.AlignCenter))
-    lay.addWidget(lol)
+    ex = Example()
+    lay = QtWidgets.QVBoxLayout(ex)
     lay.addWidget(PianoKeyBoard())
-    lay.addWidget(lol1)
-    w.resize(640, 480)
-    w.setWindowTitle("Пианино")
-    w.show()
+    #lol = QPushButton("Вывести длительность")
+    #lol1 = QLineEdit("")
+    #w = QtWidgets.QWidget()
+    #lay = QtWidgets.QVBoxLayout(w)
+    #lay.addWidget(QtWidgets.QLabel("Piano Keyboard", alignment=QtCore.Qt.AlignCenter))
+    #lay.addWidget(lol)
+    #lay.addWidget(PianoKeyBoard())
+    #lay.addWidget(lol1)
+    #w.resize(640, 480)
+    #w.setWindowTitle("Пианино")
+    #w.show()
+    ex.show()
     sys.exit(app.exec_())
