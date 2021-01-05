@@ -71,7 +71,7 @@ class PianoKey(QtWidgets.QGraphicsRectItem):
 
 
 class PianoKeyBoard(QtWidgets.QGraphicsView):
-    def __init__(self, num_octaves=2,  parent=None, end_octave=1, first_octave=3):
+    def __init__(self, num_octaves=7,  parent=None, end_octave=1, first_octave=3):
         super(PianoKeyBoard, self).__init__(parent)
         self.initialize()
         self.m_numOctaves = num_octaves
@@ -149,16 +149,5 @@ if __name__ == '__main__':
     ex = Example()
     lay = QtWidgets.QVBoxLayout(ex)
     lay.addWidget(PianoKeyBoard())
-    #lol = QPushButton("Вывести длительность")
-    #lol1 = QLineEdit("")
-    #w = QtWidgets.QWidget()
-    #lay = QtWidgets.QVBoxLayout(w)
-    #lay.addWidget(QtWidgets.QLabel("Piano Keyboard", alignment=QtCore.Qt.AlignCenter))
-    #lay.addWidget(lol)
-    #lay.addWidget(PianoKeyBoard())
-    #lay.addWidget(lol1)
-    #w.resize(640, 480)
-    #w.setWindowTitle("Пианино")
-    #w.show()
     ex.show()
     sys.exit(app.exec_())
