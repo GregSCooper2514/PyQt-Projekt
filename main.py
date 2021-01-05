@@ -8,6 +8,7 @@ start_time = None
 end_time = None
 KEYWIDTH, KEYHEIGHT = 18, 72
 
+
 class Example(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
@@ -16,6 +17,7 @@ class Example(QtWidgets.QWidget):
     def initUI(self):
         self.setGeometry(0, 0, 1280, 1024)
         self.setWindowTitle('Пианино')
+
 
 class PianoKey(QtWidgets.QGraphicsRectItem):
     def __init__(self, black=False, rect = QtCore.QRectF(), parent=None, num=0):
