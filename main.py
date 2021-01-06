@@ -2,10 +2,11 @@ import os
 import sys
 import time
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
-from PyQt5.QtWidgets import QPushButton, QLineEdit
+from PyQt5.QtWidgets import *
 os.chdir("C:\\Users\\Greg\\Downloads")
 start_time = None
 end_time = None
+menubar = None
 KEYWIDTH, KEYHEIGHT = 18, 72
 
 
@@ -15,9 +16,16 @@ class Example(QtWidgets.QWidget):
         self.initUI()
 
     def initUI(self):
+        global menubar
         self.setGeometry(0, 0, 1280, 1024)
         self.setWindowTitle('NAME TBD')
         self.showMaximized()
+        menubar = QMenuBar()
+        self.actionFile = menubar.addMenu("File")
+        self.actionFile.addAction("New")
+        self.actionFile.addAction("Open")
+        self.actionFile.addAction("Save")
+        self.actionFile.addAction("Save as sound file")
 
 
 class PianoKey(QtWidgets.QGraphicsRectItem):
@@ -149,6 +157,7 @@ if __name__ == '__main__':
     lol1 = QPushButton("d")
     lol1.resize(1280, 512)
     lay = QtWidgets.QVBoxLayout(ex)
+    lay.addWidget(menubar)
     lay.addWidget(lol1)
     lay.addWidget(PianoKeyBoard())
     ex.show()
