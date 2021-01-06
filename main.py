@@ -16,7 +16,8 @@ class Example(QtWidgets.QWidget):
 
     def initUI(self):
         self.setGeometry(0, 0, 1280, 1024)
-        self.setWindowTitle('Пианино')
+        self.setWindowTitle('NAME TBD')
+        self.showMaximized()
 
 
 class PianoKey(QtWidgets.QGraphicsRectItem):
@@ -138,11 +139,7 @@ class PianoKeyBoard(QtWidgets.QGraphicsView):
 
 def addnote(note, start_time, end_time):
     x = str(end_time - start_time) + " " + str(note)
-    lol1.setText(x)
-
-
-def display_num(text):
-    lol1.setText(text)
+    #lol1.setText(x)
 
 
 if __name__ == '__main__':
