@@ -1,15 +1,17 @@
-import os
 import sys
-import time
-from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
-from PyQt5.QtWidgets import *
+
 from PyQt5.QtGui import QPainter, QColor
-class NoteTable(QtWidgets.QGraphicsView):
-    def __init__(self, parent=None):
-        super(NoteTable, self).__init__(parent)
-        self.initialize()
-        scene = QtWidgets.QGraphicsScene(QtCore.QRectF(0, 0, 100, 100), self)
-        self.setScene(scene)
+from PyQt5.QtWidgets import QWidget, QApplication
+
+
+class Example(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        self.setGeometry(300, 300, 200, 200)
+        self.setWindowTitle('Рисование')
 
     def paintEvent(self, event):
         qp = QPainter()
@@ -25,28 +27,9 @@ class NoteTable(QtWidgets.QGraphicsView):
         qp.setBrush(QColor(0, 0, 255))
         qp.drawRect(30, 90, 120, 30)
 
-    def initialize(self):
-        self.setAttribute(QtCore.Qt.WA_InputMethodEnabled, False)
-        #self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        #self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        #self.setCacheMode(QtWidgets.QGraphicsView.CacheBackground)
-        self.setViewportUpdateMode(QtWidgets.QGraphicsView.MinimalViewportUpdate)
-        self.setRenderHints(QtGui.QPainter.Antialiasing |
-            QtGui.QPainter.TextAntialiasing |
-            QtGui.QPainter.SmoothPixmapTransform)
-        self.setOptimizationFlag(QtWidgets.QGraphicsView.DontClipPainter, True)
-        self.setOptimizationFlag(QtWidgets.QGraphicsView.DontSavePainterState, True)
-        self.setOptimizationFlag(QtWidgets.QGraphicsView.DontAdjustForAntialiasing, True)
-        self.setBackgroundBrush(QtWidgets.QApplication.palette().base())
 
 if __name__ == '__main__':
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    app.setStyle('fusion')
-    w = QtWidgets.QWidget()
-    lay = QtWidgets.QVBoxLayout(w)
-    lay.addWidget(NoteTable())
-    w.resize(640, 480)
-    w.setWindowTitle("asd")
-    w.show()
-    sys.exit(app.exec_()) 
+    app = QApplication(sys.argv)
+    ex = Example()
+    ex.show()
+    sys.exit(app.exec())
