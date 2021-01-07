@@ -147,7 +147,7 @@ class PianoKeyBoard(QtWidgets.QGraphicsView):
 
 def addnote(note, start_time, end_time):
     x = str(end_time - start_time) + " " + str(note)
-    #lol1.setText(x)
+    lol1.setText(x)
 
 
 if __name__ == '__main__':
