@@ -7,6 +7,7 @@ os.chdir("C:\\Users\\Greg\\Downloads")
 start_time = None
 end_time = None
 menubar = None
+buttton_lay = None
 KEYWIDTH, KEYHEIGHT = 18, 72
 
 
@@ -17,6 +18,7 @@ class Example(QtWidgets.QWidget):
 
     def initUI(self):
         global menubar
+        global buttton_lay
         self.setGeometry(0, 0, 1280, 1024)
         self.setWindowTitle('NAME TBD')
         self.showMaximized()
@@ -26,6 +28,21 @@ class Example(QtWidgets.QWidget):
         self.actionFile.addAction("Open")
         self.actionFile.addAction("Save")
         self.actionFile.addAction("Save as sound file")
+        self.lay_button = QtWidgets.QHBoxLayout()
+        self.key_text = QLabel("Ключ")
+        self.key_text.adjustSize()
+        self.lay_button.addWidget(self.key_text, alignment=QtCore.Qt.AlignLeft)
+        self.combo = QComboBox(self)
+        self.combo.addItem("Скрипичный")
+        self.combo.addItem("Басовый")
+        self.lay_button.addWidget(self.combo, alignment=QtCore.Qt.AlignLeft)
+        self.play_but = QPushButton()
+        self.play_but.setText("PLAY")
+        self.lay_button.addWidget(self.play_but)
+        self.stop_btn = QPushButton()
+        self.stop_btn.setText("STOP")
+        self.lay_button.addWidget(self.stop_btn)
+        buttton_lay = self.lay_button
 
 
 class PianoKey(QtWidgets.QGraphicsRectItem):
@@ -137,10 +154,6 @@ class PianoKeyBoard(QtWidgets.QGraphicsView):
         self.setOptimizationFlag(QtWidgets.QGraphicsView.DontAdjustForAntialiasing, True)
         self.setBackgroundBrush(QtWidgets.QApplication.palette().base())
 
-    #def resizeEvent(self, event):
-    #    super(PianoKeyBoard, self).resizeEvent(event)
-    #    self.fitInView(self.scene().sceneRect(), QtCore.Qt.KeepAspectRatio)
-
     def sizeHint(self):
         return self.mapFromScene(self.sceneRect()).boundingRect().size()
 
@@ -154,11 +167,9 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle('fusion')
     ex = Example()
-    lol1 = QPushButton("d")
-    lol1.resize(1280, 512)
     lay = QtWidgets.QVBoxLayout(ex)
     lay.addWidget(menubar)
-    lay.addWidget(lol1)
+    lay.addLayout(buttton_lay)
     lay.addWidget(PianoKeyBoard())
     ex.show()
     sys.exit(app.exec_())
