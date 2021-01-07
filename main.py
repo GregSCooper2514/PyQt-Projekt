@@ -3,6 +3,7 @@ import sys
 import time
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QPainter, QColor
 os.chdir("C:\\Users\\Greg\\Downloads")
 start_time = None
 end_time = None
@@ -158,6 +159,42 @@ class PianoKeyBoard(QtWidgets.QGraphicsView):
         return self.mapFromScene(self.sceneRect()).boundingRect().size()
 
 
+class NoteTable(QtWidgets.QGraphicsView):
+    def __init__(self, parent=None):
+        super(NoteTable, self).__init__(parent)
+        self.initialize()
+        scene = QtWidgets.QGraphicsScene(QtCore.QRectF(0, 0, 100, 100), self)
+        self.setScene(scene)
+
+    def paintEvent(self, event):
+        qp = QPainter()
+        qp.begin(self)
+        self.draw_flag(qp)
+        qp.end()
+
+    def draw_flag(self, qp):
+        qp.setBrush(QColor(255, 0, 0))
+        qp.drawRect(30, 30, 120, 30)
+        qp.setBrush(QColor(0, 255, 0))
+        qp.drawRect(30, 60, 120, 30)
+        qp.setBrush(QColor(0, 0, 255))
+        qp.drawRect(30, 90, 120, 30)
+
+    def initialize(self):
+        self.setAttribute(QtCore.Qt.WA_InputMethodEnabled, False)
+        #self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        #self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setCacheMode(QtWidgets.QGraphicsView.CacheBackground)
+        self.setViewportUpdateMode(QtWidgets.QGraphicsView.MinimalViewportUpdate)
+        self.setRenderHints(QtGui.QPainter.Antialiasing |
+            QtGui.QPainter.TextAntialiasing |
+            QtGui.QPainter.SmoothPixmapTransform)
+        self.setOptimizationFlag(QtWidgets.QGraphicsView.DontClipPainter, True)
+        self.setOptimizationFlag(QtWidgets.QGraphicsView.DontSavePainterState, True)
+        self.setOptimizationFlag(QtWidgets.QGraphicsView.DontAdjustForAntialiasing, True)
+        self.setBackgroundBrush(QtWidgets.QApplication.palette().base())
+
+
 def addnote(note, start_time, end_time):
     x = str(end_time - start_time) + " " + str(note)
     lol1.setText(x)
@@ -170,6 +207,7 @@ if __name__ == '__main__':
     lay = QtWidgets.QVBoxLayout(ex)
     lay.addWidget(menubar)
     lay.addLayout(buttton_lay)
+    lay.addWidget(NoteTable())
     lay.addWidget(PianoKeyBoard())
     ex.show()
     sys.exit(app.exec_())
