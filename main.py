@@ -195,7 +195,7 @@ class NoteTable(QtWidgets.QGraphicsView):
         self.setBackgroundBrush(QtWidgets.QApplication.palette().base())
 
 
-def addnote(note, start_time, end_time):
+def add_note(note, start_time, end_time):
     x = str(end_time - start_time) + " " + str(note)
     lol1.setText(x)
 
