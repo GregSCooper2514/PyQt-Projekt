@@ -4,30 +4,23 @@ import time
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-from mingus.containers import Bar
-from mingus.containers import Track
-import mingus.extra.lilypond as LilyPond
-from mingus.containers.instrument import Instrument, Piano, Guitar
-i = Instrument()
-i.name = "PianoKeyBoard"
-i.clef = "bass"
 os.chdir("C:\\Users\\Greg\\Downloads")
 note_list = dict()
-note_list = {"0": "C-0", "1": "C#-0", "2": "D-0", "3": "D#-0", "4": "E-0", "5": "E#-0", "6": "F-0",
-             "7": "F#-0", "8": "G-0", "9": "G#-0", "10": "A-0", "11": "A#-0", "12": "B-0",
-             "13": "B#-0", "14": "C-1", "15": "C#-1", "16": "D-1", "17": "D#-1", "18": "E-1",
-             "19": "E#-1", "20": "F-1", "21": "F#-1", "22": "G-1", "23": "G#-1", "24": "A-1",
-             "25": "A#-1", "26": "B-1", "27": "B#-1", "27": "C-2", "28": "C#-2", "29": "D-2",
-             "29": "D#-2", "30": "E-2", "31": "E#-2", "32": "F-2", "33": "F#-2", "34": "G-2",
-             "35": "G#-2", "36": "A-2", "37": "A#-2", "38": "B-2", "39": "B#-2", "40": "C-3",
-             "41": "C#-3", "42": "D-3", "43": "D#-3", "44": "E-3", "45": "E#-3", "46": "F-3",
-             "47": "F#-3", "48": "G-3", "49": "G#-3", "50": "A-3", "51": "A#-3", "52": "B-3", 
-             "53": "B#-3", "54": "C-4", "55": "C#-4", "56": "D-4", "57": "D#-4", "58": "E-4", 
-             "59": "E#-4", "60": "F-4", "61": "F#-4", "62": "G-4", "63": "G#-4", "64": "A-4", 
-             "65": "A#-4", "66": "B-4", "67": "B#-4", "68": "C-5", "69": "C#-5", "70": "D-5", 
-             "71": "D#-5", "72": "E-5", "73": "E#-5", "74": "F-5", "75": "F#-5", "76": "G-5", 
-             "77": "G#-5", "78": "A-5", "79": "A#-5", "80": "B-5", "81": "B#-5", "82": "C-6", 
-             "83": "C#-6", "84": "D-6", "85": "D#-6", "86": "E-6", "87": "E#-6"}
+note_list = {"0": "C-0", "1": "C#-0", "2": "D-0", "3": "C-1", "4": "C#-1", "5": "D-1", "6": "D#-1",
+             "7": "E-1", "8": "E#-1", "9": "F-1", "10": "F#-1", "11": "G-1", "12": "G#-1", 
+             "13": "A-1", "14": "A#-1", "15": "B-1", "16": "B#-1", "17": "C-2", "18": "C#-2",
+             "19": "D-2", "20": "D#-2", "21": "E-2", "22": "E#-2", "23": "F-2", "24": "F#-2",
+             "25": "G-2", "26": "G#-2", "27": "A-2", "28": "A#-2", "29": "B-2", "30": "B#-2", 
+             "31": "C-3", "32": "C#-3", "33": "D-3", "34": "D#-3", "35": "E-3", "36": "E#-3", 
+             "37": "F-3", "38": "F#-3", "39": "G-3", "40": "G#-3", "41": "A-3", "42": "A#-3", 
+             "43": "B-3", "44": "B#-3", "45": "C-4", "46": "C#-4", "47": "D-4", "48": "D#-4", 
+             "49": "E-4", "50": "E#-4", "51": "F-4", "52": "F#-4", "53": "G-4", "54": "G#-4", 
+             "55": "A-4", "56": "A#-4", "57": "B-4", "58": "B#-4", "59": "C-5", "60": "C#-5", 
+             "61": "D-5", "62": "D#-5", "63": "E-5", "64": "E#-5", "65": "F-5", "66": "F#-5", 
+             "67": "G-5", "68": "G#-5", "69": "A-5", "70": "A#-5", "71": "B-5", "72": "B#-5", 
+             "73": "C-6", "74": "C#-6", "75": "D-6", "76": "D#-6", "77": "E-6", "78": "E#-6", 
+             "79": "F-6", "80": "F#-6", "81": "G-6", "82": "G#-6", "83": "A-6", "84": "A#-6", 
+             "85": "B-6", "86": "B#-6", "87": "C-7"}
 start_time = None
 end_time = None
 menubar = None
@@ -167,8 +160,6 @@ class PianoKeyBoard(QtWidgets.QGraphicsView):
 
     def initialize(self):
         self.setAttribute(QtCore.Qt.WA_InputMethodEnabled, False)
-        #self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        #self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setCacheMode(QtWidgets.QGraphicsView.CacheBackground)
         self.setViewportUpdateMode(QtWidgets.QGraphicsView.MinimalViewportUpdate)
         self.setRenderHints(QtGui.QPainter.Antialiasing |
@@ -181,42 +172,6 @@ class PianoKeyBoard(QtWidgets.QGraphicsView):
 
     def sizeHint(self):
         return self.mapFromScene(self.sceneRect()).boundingRect().size()
-
-
-class NoteTable(QtWidgets.QGraphicsView):
-    def __init__(self, parent=None):
-        super(NoteTable, self).__init__(parent)
-        self.initialize()
-        scene = QtWidgets.QGraphicsScene(QtCore.QRectF(0, 0, 100, 100), self)
-        self.setScene(scene)
-
-    def paintEvent(self, event):
-        qp = QPainter()
-        qp.begin(self)
-        self.draw_flag(qp)
-        qp.end()
-
-    def draw_flag(self, qp):
-        qp.setBrush(QColor(255, 0, 0))
-        qp.drawRect(30, 30, 120, 30)
-        qp.setBrush(QColor(0, 255, 0))
-        qp.drawRect(30, 60, 120, 30)
-        qp.setBrush(QColor(0, 0, 255))
-        qp.drawRect(30, 90, 120, 30)
-
-    def initialize(self):
-        self.setAttribute(QtCore.Qt.WA_InputMethodEnabled, False)
-        #self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        #self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.setCacheMode(QtWidgets.QGraphicsView.CacheBackground)
-        self.setViewportUpdateMode(QtWidgets.QGraphicsView.MinimalViewportUpdate)
-        self.setRenderHints(QtGui.QPainter.Antialiasing |
-            QtGui.QPainter.TextAntialiasing |
-            QtGui.QPainter.SmoothPixmapTransform)
-        self.setOptimizationFlag(QtWidgets.QGraphicsView.DontClipPainter, True)
-        self.setOptimizationFlag(QtWidgets.QGraphicsView.DontSavePainterState, True)
-        self.setOptimizationFlag(QtWidgets.QGraphicsView.DontAdjustForAntialiasing, True)
-        self.setBackgroundBrush(QtWidgets.QApplication.palette().base())
 
 
 def add_note(note, start_time, end_time):
@@ -245,11 +200,11 @@ if __name__ == '__main__':
     app.setStyle('fusion')
     ex = Example()
     lol1 = QLineEdit()
+    lol1.setMinimumHeight(100)
     lay = QtWidgets.QVBoxLayout(ex)
     lay.addWidget(menubar)
     lay.addLayout(buttton_lay)
     lay.addWidget(lol1)
-    lay.addWidget(NoteTable())
     lay.addWidget(PianoKeyBoard())
     ex.show()
     sys.exit(app.exec_())
