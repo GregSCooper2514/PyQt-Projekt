@@ -1,26 +1,13 @@
 import os
 import sys
 import time
+from pydub import *
+from pydub.playback import play
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 os.chdir("C:\\Users\\Greg\\Downloads")
-note_list = dict()
-note_list = {"0": "C-0", "1": "C#-0", "2": "D-0", "3": "C-1", "4": "C#-1", "5": "D-1", "6": "D#-1",
-             "7": "E-1", "8": "E#-1", "9": "F-1", "10": "F#-1", "11": "G-1", "12": "G#-1", 
-             "13": "A-1", "14": "A#-1", "15": "B-1", "16": "B#-1", "17": "C-2", "18": "C#-2",
-             "19": "D-2", "20": "D#-2", "21": "E-2", "22": "E#-2", "23": "F-2", "24": "F#-2",
-             "25": "G-2", "26": "G#-2", "27": "A-2", "28": "A#-2", "29": "B-2", "30": "B#-2", 
-             "31": "C-3", "32": "C#-3", "33": "D-3", "34": "D#-3", "35": "E-3", "36": "E#-3", 
-             "37": "F-3", "38": "F#-3", "39": "G-3", "40": "G#-3", "41": "A-3", "42": "A#-3", 
-             "43": "B-3", "44": "B#-3", "45": "C-4", "46": "C#-4", "47": "D-4", "48": "D#-4", 
-             "49": "E-4", "50": "E#-4", "51": "F-4", "52": "F#-4", "53": "G-4", "54": "G#-4", 
-             "55": "A-4", "56": "A#-4", "57": "B-4", "58": "B#-4", "59": "C-5", "60": "C#-5", 
-             "61": "D-5", "62": "D#-5", "63": "E-5", "64": "E#-5", "65": "F-5", "66": "F#-5", 
-             "67": "G-5", "68": "G#-5", "69": "A-5", "70": "A#-5", "71": "B-5", "72": "B#-5", 
-             "73": "C-6", "74": "C#-6", "75": "D-6", "76": "D#-6", "77": "E-6", "78": "E#-6", 
-             "79": "F-6", "80": "F#-6", "81": "G-6", "82": "G#-6", "83": "A-6", "84": "A#-6", 
-             "85": "B-6", "86": "B#-6", "87": "C-7"}
+default_sound = AudioSegment.from_wav("default.wav")
 start_time = None
 end_time = None
 menubar = None
@@ -47,20 +34,18 @@ class Example(QtWidgets.QWidget):
         self.actionFile.addAction("Save")
         self.actionFile.addAction("Save as sound file")
         self.lay_button = QtWidgets.QHBoxLayout()
-        self.key_text = QLabel("Ключ")
-        self.key_text.adjustSize()
-        self.lay_button.addWidget(self.key_text, alignment=QtCore.Qt.AlignLeft)
-        self.combo = QComboBox(self)
-        self.combo.addItem("Скрипичный")
-        self.combo.addItem("Басовый")
-        self.lay_button.addWidget(self.combo, alignment=QtCore.Qt.AlignLeft)
         self.play_but = QPushButton()
         self.play_but.setText("PLAY")
+        self.play_but.clicked.connect(play_sound(note_container, default_sound))
+        self.play_but.clicked.connect(self.play_sound)
         self.lay_button.addWidget(self.play_but)
         self.stop_btn = QPushButton()
         self.stop_btn.setText("STOP")
         self.lay_button.addWidget(self.stop_btn)
         buttton_lay = self.lay_button
+
+    def play_sound(self):
+        playsound.playsound("sound.wav")
 
 
 class PianoKey(QtWidgets.QGraphicsRectItem):
@@ -148,7 +133,7 @@ class PianoKeyBoard(QtWidgets.QGraphicsView):
                 j = i % 12
                 if j >= 5: j += 1
             if j % 2 == 0:
-                x = (octave + j / 2)*KEYWIDTH
+                x = (octave + j / 2) * KEYWIDTH
                 key = PianoKey(rect=QtCore.QRectF(x, 0, KEYWIDTH, KEYHEIGHT), black=False, num=i)
             else:
                 x = (octave + j // 2) * KEYWIDTH + KEYWIDTH * 6 // 10 + 1
@@ -175,25 +160,26 @@ class PianoKeyBoard(QtWidgets.QGraphicsView):
 
 
 def add_note(note, start_time, end_time):
-    global note_container
-    lol1.setText(str(note))
-    element = [note, end_time - start_time]
+    global note_container, default_sound
+    time = (end_time - start_time) * 100
+    if time < 90:
+        value = 120
+    if 90 < time < 180:
+        value = 240
+    if 180 < time < 360:
+        value = 480
+    if time > 360:
+        value = 960
+    element = [note, value]
     note_container.append(element)
-    get_png()
 
-
-def get_png():
-    global note_container
-    t = Track(instrument=i)
-    lol = Bar()
-    t.add_bar(lol)
-    for a in note_container:
-        b = Bar("C", (1, 1))
-        b + note_list[str(a[0])]
-        t.add_bar(t)
-    bar = LilyPond.from_Track(t)
-    LilyPond.to_png(bar, "lol")
-
+def play_sound(container, sound):
+    for a in container:
+        file_path = str(a[0]) + ".wav"
+        cur_note = AudioSegment.from_wav(f"SoundSamples\\{file_path}")
+        cut_note = cur_note[:int(a[1])]
+        sound += cut_note
+    play(sound)
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
