@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtSvg import *
+note_list = dict()
 note_list = {"0": "C-0", "1": "C#-0", "2": "D-0", "3": "C-1", "4": "C#-1", "5": "D-1",
              "6": "D#-1", "7": "E-1", "8": "E#-1", "9": "F-1", "10": "F#-1", "11": "G-1",
              "12": "G#-1", "13": "A-1", "14": "A#-1", "15": "B-1", "16": "B#-1", "17": "C-2",
@@ -237,6 +238,15 @@ def add_note(note, start_time, end_time):
         value = 960
     element = [note, value]
     note_container.append(element)
+    display_note()
+
+def display_note():
+    global note_container, note_list
+    x = ""
+    for a in note_container:
+        x += note_list[str(a[0])]
+        x += " "
+    labell.setText(x)
 
 def save_soundfile(filename):
     global note_container, default_sound
@@ -264,12 +274,12 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setStyle('fusion')
     ex = Example()
-    lol1 = QLineEdit()
-    lol1.setMinimumHeight(100)
+    labell = QLineEdit()
+    labell.setMinimumHeight(200)
     lay = QVBoxLayout(ex)
     lay.addWidget(menubar)
     lay.addLayout(buttton_lay)
-    lay.addWidget(lol1)
+    lay.addWidget(labell)
     lay.addWidget(PianoKeyBoard())
     ex.show()
     sys.exit(app.exec_())
