@@ -33,7 +33,9 @@ class Example(QtWidgets.QWidget):
         self.action_New = QAction("New", self)
         self.actionFile.addAction(self.action_New)
         self.action_New.triggered.connect(self.new)
-        self.actionFile.addAction("Open")
+        self.action_Open = QAction("Open", self)
+        self.actionFile.addAction(self.action_Open)
+        self.action_Open.triggered.connect(self.open_file)
         self.action_Save = QAction("Save", self)
         self.actionFile.addAction(self.action_Save)
         self.action_Save.triggered.connect(self.save)
@@ -76,6 +78,24 @@ class Example(QtWidgets.QWidget):
                 for i in note_container:
                     writer.writerow([i[0], i[1]])
 
+    def open_file(self):
+        global note_container
+        if bool(note_container):
+            buttonReply = QMessageBox.question(self, 'Piano', "Do you want to save?", QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
+            print(int(buttonReply))
+            if buttonReply == QMessageBox.Yes:
+                self.save()
+            if buttonReply == QMessageBox.No:
+                pass
+            if buttonReply == QMessageBox.Cancel:
+                return
+        name, _ = QFileDialog.getOpenFileName(self, "Open File", "", "CSV (*.csv);;All Files (*)")
+        self.file_name = name
+        with open(name, "r") as csvfile:
+            reader = csv.reader(csvfile, delimiter=';', quotechar='"')
+            for i in enumerate(reader):
+                note_container.append(i[1])
+            pass
 
 class PianoKey(QtWidgets.QGraphicsRectItem):
     def __init__(self, black=False, rect = QtCore.QRectF(), parent=None, num=0):
