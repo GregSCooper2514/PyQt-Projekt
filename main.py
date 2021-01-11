@@ -110,7 +110,7 @@ class Example(QWidget):
             reader = csv.reader(csvfile, delimiter=';', quotechar='"')
             for i in enumerate(reader):
                 note_container.append(i[1])
-            pass
+        display_note()
 
 class PianoKey(QGraphicsRectItem):
     def __init__(self, black=False, rect = QRectF(), parent=None, num=0):
