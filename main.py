@@ -25,7 +25,7 @@ note_list = {"0": "C-0", "1": "C#-0", "2": "D-0", "3": "C-1", "4": "C#-1", "5": 
              "78": "E#-6", "79": "F-6", "80": "F#-6", "81": "G-6", "82": "G#-6", "83": "A-6",
              "84": "A#-6", "85": "B-6", "86": "B#-6", "87": "C-7"}
 os.chdir("C:\\Users\\Greg\\Downloads")
-default_sound = AudioSegment.from_wav("default.wav")
+default_sound = AudioSegment.from_wav("SoundSamples\\default.wav")
 start_time = None
 end_time = None
 menubar = None
