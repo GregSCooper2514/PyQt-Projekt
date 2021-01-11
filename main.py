@@ -25,7 +25,7 @@ class Example(QtWidgets.QWidget):
     def initUI(self):
         global menubar, buttton_lay
         self.setGeometry(0, 0, 1280, 1024)
-        self.setWindowTitle('NAME TBD')
+        self.setWindowTitle('Piano')
         self.showMaximized()
         self.file_name = None
         menubar = QMenuBar()
@@ -37,7 +37,9 @@ class Example(QtWidgets.QWidget):
         self.action_Save = QAction("Save", self)
         self.actionFile.addAction(self.action_Save)
         self.action_Save.triggered.connect(self.save)
-        self.actionFile.addAction("Save as sound file")
+        self.action_sas = QAction("Save as sound file", self)
+        self.actionFile.addAction(self.action_sas)
+        self.action_sas.triggered.connect(self.save_as_sound)
         self.lay_button = QtWidgets.QHBoxLayout()
         self.play_but = QPushButton()
         self.play_but.setText("PLAY")
@@ -48,20 +50,31 @@ class Example(QtWidgets.QWidget):
 
     def new(self):
         global note_container
-        note_container = []
+        if bool(note_container):
+            buttonReply = QMessageBox.question(self, 'Piano', "Do you want to save?", QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
+            print(int(buttonReply))
+            if buttonReply == QMessageBox.Yes:
+                self.save()
+                note_container = []
+            if buttonReply == QMessageBox.No:
+                note_container = []
+            if buttonReply == QMessageBox.Cancel:
+                pass
+
+    def save_as_sound(self):
+        name, _ = QFileDialog.getSaveFileName(self, 'Save File', self.file_name, "Waveform Audio File (*.wav);;All Files (*)")
+        save_soundfile(name)
 
     def save(self):
         global note_container
         name, _ = QFileDialog.getSaveFileName(self, 'Save File', self.file_name, "CSV (*.csv);;All Files (*)")
         if bool(name):
-            file = open(name,'w')
             self.file_name = name
             with open(name, 'w', newline='') as csvfile:
                 writer = csv.writer(
                 csvfile, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                 for i in note_container:
-                    writer.writerow(i[0], i[1])
-            file.close()
+                    writer.writerow([i[0], i[1]])
 
 
 class PianoKey(QtWidgets.QGraphicsRectItem):
@@ -188,6 +201,17 @@ def add_note(note, start_time, end_time):
         value = 960
     element = [note, value]
     note_container.append(element)
+
+def save_soundfile(filename):
+    global note_container, default_sound
+    container = note_container
+    sound = default_sound
+    for a in container:
+        file_path = str(a[0]) + ".wav"
+        cur_note = AudioSegment.from_wav(f"SoundSamples\\{file_path}")
+        cut_note = cur_note[:int(a[1])]
+        sound += cut_note
+    sound.export(filename, format="wav")
 
 def play_sound():
     global note_container, default_sound
